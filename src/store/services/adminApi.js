@@ -1,0 +1,314 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+export const adminApi = createApi({
+  reducerPath: "adminApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_API_URL,
+    credentials: "include",
+  }),
+  tagTypes: [
+    "TravelPackage",
+    "RentalPackage",
+    "CarCategory",
+    "City",
+    "Vendors",
+    "Vendor",
+    "Cars",
+    "Car",
+  ],
+  endpoints: (builder) => ({
+    // Check Admin Authentication
+    checkAdmin: builder.query({
+      query: () => ({
+        url: "/admin/check",
+      }),
+    }),
+    // Admin Authentication
+    adminLogin: builder.mutation({
+      query: ({ email, password }) => ({
+        url: "/admin/login",
+        method: "POST",
+        body: { email, password },
+      }),
+    }),
+    // Admin Logout
+    adminLogout: builder.mutation({
+      query: () => ({
+        url: "/admin/logout",
+        method: "POST",
+      }),
+    }),
+    // Get User Stats
+    getUserStats: builder.query({
+      query: () => ({
+        url: "/admin/user-stats",
+      }),
+    }),
+    // Get All Users
+    getAllUsers: builder.query({
+      query: ({ search = "", page = 1, resultPerPage = 10 }) => ({
+        url: "/admin/users",
+        params: {
+          search,
+          page,
+          resultPerPage,
+        },
+      }),
+    }),
+    // Get User Details
+    getUserDetails: builder.query({
+      query: (id) => ({
+        url: `/admin/users/${id}`,
+      }),
+    }),
+    // Get Vendor Stats
+    getVendorStats: builder.query({
+      query: () => ({
+        url: "/admin/vendor-stats",
+      }),
+      providesTags: ["Vendor"],
+    }),
+    // Get All Vendors
+    getAllVendors: builder.query({
+      query: ({ search = "", page = 1, resultPerPage = 10 }) => ({
+        url: "/admin/vendors",
+        params: {
+          search,
+          page,
+          resultPerPage,
+        },
+      }),
+      providesTags: ["Vendors"],
+    }),
+    // Get Vendor Details
+    getVendorDetails: builder.query({
+      query: (id) => ({
+        url: `/admin/vendors/${id}`,
+      }),
+      providesTags: ["Vendor"],
+    }),
+    // update a Vendor
+    updateAVendor: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/admin/vendors/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Vendor"],
+    }),
+    // Get Booking Stats
+    getBookingStats: builder.query({
+      query: () => ({
+        url: "/admin/booking-stats",
+      }),
+    }),
+    // Get All Bookings
+    getAllBookings: builder.query({
+      query: () => ({
+        url: "/admin/bookings",
+      }),
+    }),
+    // Get Travel Packages
+    getAllTravelPackages: builder.query({
+      query: () => ({
+        url: "/package/travel",
+      }),
+      providesTags: ["TravelPackage"],
+    }),
+    // Add Travel Package
+    addTravelPackage: builder.mutation({
+      query: (data) => ({
+        url: "/package/travel",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["TravelPackage"],
+    }),
+    // Update Travel Package
+    updateTravelPackage: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/package/travel/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["TravelPackage"],
+    }),
+    // Delete Travel Package
+    deleteTravelPackage: builder.mutation({
+      query: (id) => ({
+        url: `/package/travel/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["TravelPackage"],
+    }),
+    // Get Cities
+    getCities: builder.query({
+      query: () => ({
+        url: "/admin/cities",
+      }),
+      providesTags: ["City"],
+    }),
+    // Add New City
+    addNewCity: builder.mutation({
+      query: (data) => ({
+        url: "/admin/cities",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["City"],
+    }),
+    // Add New Category to City
+    addNewCategoryToCity: builder.mutation({
+      query: ({ cityId, category }) => ({
+        url: `/admin/cities/${cityId}`,
+        method: "PUT",
+        body: category,
+      }),
+      invalidatesTags: ["City"],
+    }),
+    // Update Category from City
+    updateCategoryFromCity: builder.mutation({
+      query: ({ cityId, categoryId, category }) => ({
+        url: `/admin/cities/${cityId}/category/${categoryId}`,
+        method: "PUT",
+        body: category,
+      }),
+      invalidatesTags: ["City"],
+    }),
+    // Toggle Category Status from Existing City
+    toggleCategoryStatusFromCity: builder.mutation({
+      query: ({ cityId, categoryId }) => ({
+        url: `/admin/cities/${cityId}/category/${categoryId}`,
+        method: "PATCH",
+      }),
+      invalidatesTags: ["City"],
+    }),
+    // Get Car Categories
+    getCarCategories: builder.query({
+      query: () => ({
+        url: "/admin/car-categories",
+      }),
+      providesTags: ["CarCategory"],
+    }),
+    // Add Car Category
+    addCarCategory: builder.mutation({
+      query: (data) => ({
+        url: "/admin/car-categories",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["CarCategory"],
+    }),
+    // Update Car Category
+    updateCarCategory: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `/admin/car-categories/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["CarCategory"],
+    }),
+    // Get Car Stats
+    getCarStats: builder.query({
+      query: () => ({
+        url: "/admin/car-stats",
+      }),
+      providesTags: ["Car"],
+    }),
+    // Get All Cars
+    getAllCars: builder.query({
+      query: ({ search = "", page = 1, resultPerPage = 10 }) => ({
+        url: "/admin/cars",
+        params: {
+          search,
+          page,
+          resultPerPage,
+        },
+      }),
+      providesTags: ["Cars"],
+    }),
+    // Get Car Details
+    getCarDetails: builder.query({
+      query: (id) => ({
+        url: `/admin/cars/${id}`,
+      }),
+      providesTags: ["Car"],
+    }),
+    // Update a Car
+    updateACar: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/admin/cars/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Car"],
+    }),
+    getRentalPackages: builder.query({
+      query: () => ({
+        url: "/package/rental",
+      }),
+      providesTags: ["RentalPackage"],
+    }),
+    // Add Rental Package
+    addRentalPackage: builder.mutation({
+      query: (data) => ({
+        url: "/package/rental",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["RentalPackage"],
+    }),
+    // Update Rental Package
+    updateRentalPackage: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/package/rental/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["RentalPackage"],
+    }),
+    // Delete Rental Package
+    deleteRentalPackage: builder.mutation({
+      query: (id) => ({
+        url: `/package/rental/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["RentalPackage"],
+    }),
+  }),
+});
+
+export const {
+  useGetBookingStatsQuery,
+  useGetRentalPackagesQuery,
+  useDeleteRentalPackageMutation,
+  useAddRentalPackageMutation,
+  useUpdateRentalPackageMutation,
+  useDeleteTravelPackageMutation,
+  useUpdateTravelPackageMutation,
+  useAddTravelPackageMutation,
+  useUpdateACarMutation,
+  useUpdateAVendorMutation,
+  useGetCarDetailsQuery,
+  useGetCarStatsQuery,
+  useGetVendorStatsQuery,
+  useGetUserStatsQuery,
+  useLazyGetAllCarsQuery,
+  useToggleCategoryStatusFromCityMutation,
+  useAddNewCityMutation,
+  useCheckAdminQuery,
+  useGetUserDetailsQuery,
+  useAdminLoginMutation,
+  useGetCarCategoriesQuery,
+  useGetVendorDetailsQuery,
+  useGetCitiesQuery,
+  useAddCarCategoryMutation,
+  useUpdateCarCategoryMutation,
+  useLazyGetAllUsersQuery,
+  useLazyGetAllVendorsQuery,
+  useLazyGetAllBookingsQuery,
+  useAddNewCategoryToCityMutation,
+  useAdminLogoutMutation,
+  useGetAllTravelPackagesQuery,
+  useUpdateCategoryFromCityMutation,
+} = adminApi;

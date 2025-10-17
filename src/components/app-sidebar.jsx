@@ -1,0 +1,105 @@
+import { GalleryVerticalEnd, LogOutIcon, Settings2Icon } from "lucide-react";
+
+import { SearchForm } from "@/components/search-form";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import { sidebarLinks } from "@/constants/sidebar";
+import { Link } from "react-router";
+import { cn } from "@/lib/utils";
+import { useAdminLogoutMutation } from "@/store/services/adminApi";
+
+export function AppSidebar({ ...props }) {
+  const [logout] = useAdminLogoutMutation();
+
+  const handleLogout = async () => {
+    await logout()
+      .unwrap()
+      .then(() => {
+        window.location.href = "/login";
+      });
+  };
+
+  return (
+    <Sidebar {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem className="flex items-center gap-2 p-4">
+            <img
+              className="h-10 w-10 rounded-md object-cover"
+              src="src/assets/logo.png"
+              alt="logo"
+            />
+            <Link to="/" className="text-2xl font-bold text-white">
+              Cabnex
+            </Link>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            {sidebarLinks.map(({ title, href, icon: Icon }, index) => (
+              <SidebarMenuItem key={index}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={title}
+                  className={cn(
+                    "hover:bg-muted/10 rounded-lg hover:text-white",
+                    href === props?.pathname && "bg-muted/20 font-medium",
+                  )}
+                >
+                  <Link
+                    className="flex items-center gap-2 text-white"
+                    to={href}
+                  >
+                    {Icon && <Icon />}
+                    {title}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu className="flex flex-row justify-evenly gap-1">
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="sm"
+              asChild
+              className="hover:bg-muted/10 rounded-lg"
+            >
+              <Link
+                to="/settings"
+                className="flex items-center gap-2 text-sm text-white hover:text-white"
+              >
+                <Settings2Icon className="h-4 w-4" />
+                Settings
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="sm"
+              className="hover:bg-muted/10 rounded-lg text-white hover:text-white"
+              onClick={handleLogout}
+            >
+              <LogOutIcon className="h-4 w-4" />
+              Logout
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
+}
