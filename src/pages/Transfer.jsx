@@ -243,6 +243,7 @@ const AddTransferDialog = () => {
       city: cityName,
       state: stateName,
     });
+    setIsSelecting(false);
   };
 
   return (
@@ -288,6 +289,7 @@ const AddTransferDialog = () => {
                       placeholder="Search for a location"
                       className="w-full rounded-md border p-3"
                       onFocus={handleFocus}
+                      onBlurCapture={() => setIsSelecting(false)}
                       required
                     />
                   </Autocomplete>

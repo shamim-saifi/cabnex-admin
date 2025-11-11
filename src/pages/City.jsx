@@ -261,6 +261,7 @@ const AddCityDialog = () => {
                       placeholder="Search for a location"
                       className="w-full rounded-md border p-3"
                       onFocus={handleFocus}
+                      onBlurCapture={() => setIsSelecting(false)}
                       id="city"
                       name="city"
                       required
